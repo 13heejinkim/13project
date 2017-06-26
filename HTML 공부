@@ -1,2 +1,19 @@
 공부 사이트 : https://www.w3schools.com/
 이 사이트에서 "Learn HTML" -> "HTML Lists", "HTML Blocks", "HTML Classes" 공부
+
+<HTML Lists>
+
+- Unordered HTML List
+: <ul> tag 사용, 각각의 list item은 <li> tag 사용.
+default 값으로 각 list item은 bullets(작은 검정 원)으로 표현된다.
+item marker는 변경할수 있다.
+	ex) <ul style="list-style-type:000"> 000에 원하는 type를 설정한다.
+	type는 disc(검정 작은 원, default), circle(흰색 작은 원), square(검정 작은 네모), none(아무런 마크가 안생긴다)이 존재한다.
+
+-Ordered HTML List
+: <ol> tag 사용, default 값으로 "1.","2.","3."...처럼 숫자로 표현된다.
+type는 <ol type="0">으로 변경할 수 있따.
+	type는 "1"(1,2,3,...), "A"(A,B,C,...), "a"(a,b,c,...), "I"(I,II,III,...), "i"(i,ii,iii,...)가 존재한다.
+
+-HTML Description Lists
+: <dl> tag로 설명하고자 하는 리스트를 표현한다. <dl>~</dl>구역안에서 <dt>로 용어의 이름을 표현하고, <dd>로 각 용어의 부가 설명을 표현한다.
