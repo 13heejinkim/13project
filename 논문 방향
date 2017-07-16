@@ -85,3 +85,15 @@ http://data.seoul.go.kr/openinf/sheetview.jsp?infId=OA-2217&tMenu=11
 
 따라서 평균 이용량과 날씨, 대기오염과의 상관관계를 파악한다.
 따라서 장마철이나 무더위, 강추위 등 기온의 변화하거나 미세먼지가 발생할 경우, 대중교통의 수요를 조절할려고 할때, 좋은 지표가 될것이다.
+
+--------------------------------------------------------------
+(scikit-learn)sklearn 에서 svm, datasets 등을 이용하면 될듯.
+http://scikit-learn.org/stable/supervised_learning.html
+이사이트이용
+
+데이터기간은 2015년1월부터 2017년 6월까지
+
+http://hamait.tistory.com/735
+상관관계 포스팅
+https://ko.wikipedia.org/wiki/%EC%83%81%EA%B4%80%EB%B6%84%EC%84%9D
+상관관계 위키트리
