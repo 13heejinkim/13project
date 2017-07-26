@@ -76,18 +76,17 @@ correlation(normalized(weather[1]), normalized(weather[2]))
 import pandas as pd
 from pandas import Series , DataFrame
 import numpy as np
+
 import matplotlib.pyplot as plt
+from scipy import polyval
+from pylab import plot, title, show, legend
 
-weather = pd.read_excel('weather.xlsx') ## weatehr 원본 읽기
-
-weather = weather.loc[1:29,['기간','기온(℃)','강수량(mm)','상대습도(%)']] ## 필요한 평균기온, 강수량, 상대습도만 뽑아온다
-## 첫번째 row는 필요없으므로 제거
+weather = pd.read_excel('weather ver1.xlsx') ## weatehr 원본 읽기
 
 weather.columns = ['기간','기온','강수량','상대습도'] ## column 이름 바꾸기
 
-print(weather.corr())
-#결과 값이
-Empty DataFrame
-Columns: []
-Index: []
-로 나오는데 이유를 모르겠다
+weather['강수량'].corr(weather['상대습도'])
+#결과 대략 0.641
+
+plt.plot(weather['강수량'],weather['상대습도'],'ro')
+plt.show()
