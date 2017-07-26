@@ -69,3 +69,25 @@ def normalized(x) :
   
 correlation(normalized(weather[1]), normalized(weather[2]))
 # normalized해도 결과는 동일하다(괜히 함)
+
+-------------------------------------------------------------
+#pandas를 이용한 coding
+
+import pandas as pd
+from pandas import Series , DataFrame
+import numpy as np
+import matplotlib.pyplot as plt
+
+weather = pd.read_excel('weather.xlsx') ## weatehr 원본 읽기
+
+weather = weather.loc[1:29,['기간','기온(℃)','강수량(mm)','상대습도(%)']] ## 필요한 평균기온, 강수량, 상대습도만 뽑아온다
+## 첫번째 row는 필요없으므로 제거
+
+weather.columns = ['기간','기온','강수량','상대습도'] ## column 이름 바꾸기
+
+print(weather.corr())
+#결과 값이
+Empty DataFrame
+Columns: []
+Index: []
+로 나오는데 이유를 모르겠다
