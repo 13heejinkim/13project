@@ -62,39 +62,60 @@ all_data = {'날짜':[], '기온':[], '강수량or상대습도':[], '미세먼�
 all_data = pd.DataFrame(all_data)
 #all_data를 저장 할 frame만들기
 
------------------------------------버스용 코딩---------------------------------------------
-import pandas as pd
-from pandas import Series , DataFrame
-import numpy as np
+-----------------------------------버스 원본 데이터 수정 코딩---------------------------------------------
+# coding: utf-8
 
+import pandas as pd
+import numpy as np
+import pylab as pl
 import matplotlib.pyplot as plt
 from scipy import polyval
 from pylab import plot, title, show, legend
 
-bus_name = pd.read_excel('bus_name.xlsx') ## 중복제거하고 매칭이 안되는 버스 제거한 bus_name 다시 읽기
+bus_name=pd.read_excel(r'bus_name.xlsx')
+bus_name
 
-#s = ['Sheet1','Sheet2','Sheet3','Sheet4','Sheet5','Sheet6','Sheet7','Sheet8','Sheet9','Sheet10','Sheet11','Sheet12','Sheet13','Sheet14','Sheet15','Sheet16','Sheet17','Sheet18','Sheet19','Sheet20']
-#bus_ori = pd.read_excel('bus(원본).xlsx', sheet = s) ## 버스 원본 data set읽어오기
+s = ['Sheet1','Sheet2','Sheet3','Sheet4','Sheet5','Sheet6','Sheet7','Sheet8','Sheet9','Sheet10','Sheet11','Sheet12','Sheet13','Sheet14','Sheet15','Sheet16','Sheet17','Sheet18','Sheet19','Sheet20']
 
-bus_ori = pd.read_excel('bus(원본).xlsx', sheet = 'Sheet1') ## 버스 원본 data set읽어오기
+data_form = {'id':[], 'matching':[], 'geton':[], 'getoff':[], 'date':[]} # data 저장형식
 
-len_bus_name = len(bus_name)
-bus_ori['매칭역'] = None
-for i in range(len(bus_ori)) :
-    check = 0
-    id = bus_ori['표준버스정류장ID'][i]
-    for j in range(len_bus_name) :
-        if id == '~' :
-            if ((bus_ori['노선번호'][i] == bus_name['노선번호'][j]) and (bus_ori['노선명'][i] == bus_name['노선명'][j]) and 
-                (bus_ori['버스정류장ARS번호'][i] == bus_name['버스정류장ARS번호'][j]) and (bus_ori['역명'][i] == bus_name['역명'][j])) :
-                check = 1
-        else :
-            if id == bus_name['표준버스정류장ID'][j] :
-                    check = 1
-    if check == 0 :
-        bus_ori = bus_ori.drop([i],axis=0)
-    else :
-        bus_ori['매칭역'][i] = bus_name['매칭역'][j]
+bus_data=[]
+
+for index in range(20):
+    print("Loading "+str(s[index])) # 진행사항 확인
+    bus_ori = pd.read_excel(r'bus_ori.xlsx', sheet = s[index]) ## 버스 원본 data set읽어오기
+    bus_data.append(pd.DataFrame(data_form)) #bus_data 저장 할 frame만들기
+    print("The start of "+str(s[index])) # 진행사항 확인
+    total_num=0
+    for i in range(len(bus_ori)):
+        check=0
+        ori_id= bus_ori['표준버스정류장ID'][i]
+        for j in range(len(bus_name)):
+            name_id=bus_name['표준버스정류장ID'][j]
+            if name_id=="~": # no information of '표준버스정류장id'
+                if bus_ori['역명'][i] == bus_name['역명'][j] and bus_ori['노선번호'][i] == bus_name['노선번호'][j]:
+                    check=1
+            elif ori_id == name_id : # matching
+                check=1
+            if check: # there is matching information
+                temp_on=0
+                temp_off=0
+                for k in range(6,53,2): # find the sum of 'get on' and 'get off'
+                    temp_on += bus_ori.iat[i,k]
+                    temp_off += bus_ori.iat[i,k+1]
+                bus_data[index].loc[total_num,'id']=ori_id
+                bus_data[index].loc[total_num,'matching']=bus_name['매칭역'][j]
+                bus_data[index].loc[total_num,'geton']=temp_on
+                bus_data[index].loc[total_num,'getoff']=temp_off
+                bus_data[index].loc[total_num,'date']=str(bus_ori['사용년월'][i])
+                total_num += 1
+                break
+    print("The end of "+str(s[index])) # 진행사항 확인
+
+with pd.ExcelWriter("bus_data.xlsx") as writer:
+    for index in range(20):
+        bus_data[index].to_excel(writer, sheet_name=s[index])
+    writer.save()
         
 --------------------------------------보류코드----------------------------
 def mean(x) :
