@@ -116,7 +116,44 @@ with pd.ExcelWriter("bus_data.xlsx") as writer:
     for index in range(20):
         bus_data[index].to_excel(writer, sheet_name=s[index])
     writer.save()
+    
+
+--------------------------------------bus count 코드----------------------------
+import pandas as pd
+from pandas import Series , DataFrame
+import numpy as np
+
+import matplotlib.pyplot as plt
+from scipy import polyval
+from pylab import plot, title, show, legend
+
+s = ['Sheet1','Sheet2','Sheet3','Sheet4','Sheet5','Sheet6','Sheet7','Sheet8','Sheet9','Sheet10','Sheet11','Sheet12','Sheet13','Sheet14','Sheet15','Sheet16','Sheet17','Sheet18','Sheet19','Sheet20']
+
+data_form = {'matching':[], 'sum_getoff':[], 'sum_geton':[]} # data 저장형식
+
+bus_count = pd.DataFrame(data_form) #bus_count 저장 할 frame만들기
+
+for index in range(20):
+    print("Loading "+str(s[index])) # 진행사항 확인
+    bus = pd.read_excel(r'bus_data.xlsx', sheet = s[index]) ## bus_data set읽어오기
+    print("The start of "+str(s[index])) # 진행사항 확인
+    for i in range(len(bus)):
+        check=0
+        bus_mat = bus['matching'][i]
+        for j in range(len(bus_count)) :
+            if(bus_count['matching'][j] == bus_mat) :
+                check = 1
+                bus_count.loc[j,'sum_getoff'] += bus['getoff'][i]
+                bus_count.loc[j,'sum_geton'] += bus['geton'][i]
+                break
+        if check == 0 :
+            temp = [bus_mat, bus['getoff'][i], bus['geton'][i]]
+            bus_count.loc[len(bus_count)] = temp
+    print("The end of "+str(s[index])) # 진행사항 확인
         
+with pd.ExcelWriter("bus_count.xlsx") as writer:
+    bus_count.to_excel(writer)
+    writer.save()
 --------------------------------------보류코드----------------------------
 def mean(x) :
     return sum(x) / len(x)
