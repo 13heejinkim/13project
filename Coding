@@ -154,6 +154,8 @@ for index in range(20):
 with pd.ExcelWriter("bus_count.xlsx") as writer:
     bus_count.to_excel(writer)
     writer.save()
+    
+ ########이렇게 하면 sheet1것만 계산이 된다 왜그러지??? 수정해야할듯
 --------------------------------------보류코드----------------------------
 def mean(x) :
     return sum(x) / len(x)
