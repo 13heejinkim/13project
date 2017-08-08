@@ -65,7 +65,7 @@ all_data = pd.DataFrame(all_data)
 -----------------------------------버스 원본 데이터 수정 코딩---------------------------------------------
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 import pandas as pd
 import numpy as np
@@ -75,23 +75,23 @@ from scipy import polyval
 from pylab import plot, title, show, legend
 
 
-# In[2]:
+# In[ ]:
 
 bus_name=pd.read_excel(r'bus_name.xlsx')
 bus_name
 
 
-# In[3]:
+# In[ ]:
 
 s = ['Sheet1','Sheet2','Sheet3','Sheet4','Sheet5','Sheet6','Sheet7','Sheet8','Sheet9','Sheet10','Sheet11','Sheet12','Sheet13','Sheet14','Sheet15','Sheet16','Sheet17','Sheet18','Sheet19','Sheet20']
 
 
-# In[4]:
+# In[ ]:
 
 data_form = {'id':[], 'matching':[], 'geton':[], 'getoff':[], 'date':[]} # data 저장형식
 
 
-# In[5]:
+# In[ ]:
 
 bus_data=[]
 
@@ -106,11 +106,11 @@ for index in range(20):
     total_num=0
     for i in range(len(bus_ori)):
         check=0
-        ori_id= bus_ori['표준버스정류장ID'][i]
+        ori_id= str(bus_ori['표준버스정류장ID'][i])
         for j in range(len(bus_name)):
-            name_id=bus_name['표준버스정류장ID'][j]
+            name_id=str(bus_name['표준버스정류장ID'][j])
             if name_id=="~": # no information of '표준버스정류장id'
-                if bus_ori['역명'][i] == bus_name['역명'][j] and bus_ori['노선번호'][i] == bus_name['노선번호'][j]:
+                if str(bus_ori['역명'][i]) == str(bus_name['역명'][j]) and str(bus_ori['노선번호'][i]) == str(bus_name['노선번호'][j]):
                     check=1
             elif ori_id == name_id : # matching
                 check=1
@@ -118,10 +118,10 @@ for index in range(20):
                 temp_on=0
                 temp_off=0
                 for k in range(6,53,2): # find the sum of 'get on' and 'get off'
-                    temp_on += bus_ori.iat[i,k]
-                    temp_off += bus_ori.iat[i,k+1]
+                    temp_on += int(bus_ori.iat[i,k])
+                    temp_off += int(bus_ori.iat[i,k+1])
                 bus_data[index].loc[total_num,'id']=ori_id
-                bus_data[index].loc[total_num,'matching']=bus_name['매칭역'][j]
+                bus_data[index].loc[total_num,'matching']=str(bus_name['매칭역'][j])
                 bus_data[index].loc[total_num,'geton']=temp_on
                 bus_data[index].loc[total_num,'getoff']=temp_off
                 bus_data[index].loc[total_num,'date']=str(bus_ori['사용년월'][i])
@@ -138,12 +138,12 @@ with pd.ExcelWriter("bus_data.xlsx") as writer:
     writer.save()
 
 
-# In[ ]:   
-
+# In[ ]:
+#int, str로 받아야 마지막 sheet 까지 제대로 인식이 된다
 --------------------------------------bus count 코드----------------------------
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 import pandas as pd
 import numpy as np
@@ -153,17 +153,17 @@ from scipy import polyval
 from pylab import plot, title, show, legend
 
 
-# In[3]:
+# In[ ]:
 
 s = ['Sheet1','Sheet2','Sheet3','Sheet4','Sheet5','Sheet6','Sheet7','Sheet8','Sheet9','Sheet10','Sheet11','Sheet12','Sheet13','Sheet14','Sheet15','Sheet16','Sheet17','Sheet18','Sheet19','Sheet20']
 
 
-# In[4]:
+# In[ ]:
 
 data_form = {'date':[], 'matching':[], 'sum_geton':[], 'sum_getoff':[] } # data 저장형식
 
 
-# In[5]:
+# In[ ]:
 
 bus_result = pd.DataFrame(data_form) #bus_result 저장 할 frame만들기
 
@@ -176,15 +176,15 @@ for index in range(20):
     print("The start of "+str(s[index])) # 진행사항 확인
     for i in range(len(bus_sheet)):
         check=0
-        bus_mat_key = bus_sheet['matching'][i]
+        bus_mat_key = str(bus_sheet['matching'][i])
         for j in range(len(bus_result)) :
-            if(bus_result['matching'][j] == bus_mat_key) and (bus_result['date'][j] == bus_sheet['date'][i]) :
+            if(str(bus_result['matching'][j]) == bus_mat_key) and (str(bus_result['date'][j]) == str(bus_sheet['date'][i])) :
                 check = 1
-                bus_result.loc[j,'sum_getoff'] += bus_sheet['getoff'][i]
-                bus_result.loc[j,'sum_geton'] += bus_sheet['geton'][i]
+                bus_result.loc[j,'sum_getoff'] += int(bus_sheet['getoff'][i])
+                bus_result.loc[j,'sum_geton'] += int(bus_sheet['geton'][i])
                 break
-        if !check : 
-            temp = [bus_sheet['date'][i],bus_mat_key, bus_sheet['geton'][i], bus_sheet['getoff'][i]] # initialize
+        if check ==0: 
+            temp = [str(bus_sheet['date'][i]),bus_mat_key, int(bus_sheet['geton'][i]), int(bus_sheet['getoff'][i])] # initialize
             bus_result.loc[len(bus_result)] = temp
     print("The end of "+str(s[index])) # 진행사항 확인
 
