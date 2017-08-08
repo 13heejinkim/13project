@@ -65,6 +65,8 @@ all_data = pd.DataFrame(all_data)
 -----------------------------------버스 원본 데이터 수정 코딩---------------------------------------------
 # coding: utf-8
 
+# In[1]:
+
 import pandas as pd
 import numpy as np
 import pylab as pl
@@ -72,18 +74,33 @@ import matplotlib.pyplot as plt
 from scipy import polyval
 from pylab import plot, title, show, legend
 
+
+# In[2]:
+
 bus_name=pd.read_excel(r'bus_name.xlsx')
 bus_name
 
+
+# In[3]:
+
 s = ['Sheet1','Sheet2','Sheet3','Sheet4','Sheet5','Sheet6','Sheet7','Sheet8','Sheet9','Sheet10','Sheet11','Sheet12','Sheet13','Sheet14','Sheet15','Sheet16','Sheet17','Sheet18','Sheet19','Sheet20']
+
+
+# In[4]:
 
 data_form = {'id':[], 'matching':[], 'geton':[], 'getoff':[], 'date':[]} # data 저장형식
 
+
+# In[5]:
+
 bus_data=[]
+
+
+# In[ ]:
 
 for index in range(20):
     print("Loading "+str(s[index])) # 진행사항 확인
-    bus_ori = pd.read_excel(r'bus_ori.xlsx', sheet = s[index]) ## 버스 원본 data set읽어오기
+    bus_ori = pd.read_excel(r'bus_ori.xlsx', sheetname = s[index]) ## 버스 원본 data set읽어오기
     bus_data.append(pd.DataFrame(data_form)) #bus_data 저장 할 frame만들기
     print("The start of "+str(s[index])) # 진행사항 확인
     total_num=0
@@ -112,50 +129,75 @@ for index in range(20):
                 break
     print("The end of "+str(s[index])) # 진행사항 확인
 
+
+# In[ ]:
+
 with pd.ExcelWriter("bus_data.xlsx") as writer:
     for index in range(20):
         bus_data[index].to_excel(writer, sheet_name=s[index])
     writer.save()
-    
+
+
+# In[ ]:   
 
 --------------------------------------bus count 코드----------------------------
-import pandas as pd
-from pandas import Series , DataFrame
-import numpy as np
+# coding: utf-8
 
+# In[1]:
+
+import pandas as pd
+import numpy as np
+import pylab as pl
 import matplotlib.pyplot as plt
 from scipy import polyval
 from pylab import plot, title, show, legend
 
+
+# In[3]:
+
 s = ['Sheet1','Sheet2','Sheet3','Sheet4','Sheet5','Sheet6','Sheet7','Sheet8','Sheet9','Sheet10','Sheet11','Sheet12','Sheet13','Sheet14','Sheet15','Sheet16','Sheet17','Sheet18','Sheet19','Sheet20']
 
-data_form = {'date':[], 'matching':[], 'sum_getoff':[], 'sum_geton':[]} # data 저장형식
 
-bus_count = pd.DataFrame(data_form) #bus_count 저장 할 frame만들기
+# In[4]:
+
+data_form = {'date':[], 'matching':[], 'sum_geton':[], 'sum_getoff':[] } # data 저장형식
+
+
+# In[5]:
+
+bus_result = pd.DataFrame(data_form) #bus_result 저장 할 frame만들기
+
+
+# In[ ]:
 
 for index in range(20):
     print("Loading "+str(s[index])) # 진행사항 확인
-    bus = pd.read_excel(r'bus_data.xlsx', sheet = s[index]) ## bus_data set읽어오기
+    bus_sheet = pd.read_excel(r'bus_data.xlsx', sheetname = s[index]) ## 버스 원본 data set읽어오기
     print("The start of "+str(s[index])) # 진행사항 확인
-    for i in range(len(bus)):
+    for i in range(len(bus_sheet)):
         check=0
-        bus_mat = bus['matching'][i]
-        for j in range(len(bus_count)) :
-            if(bus_count['matching'][j] == bus_mat) and (bus_count['date'][j] == bus['date'][i]) :
+        bus_mat_key = bus_sheet['matching'][i]
+        for j in range(len(bus_result)) :
+            if(bus_result['matching'][j] == bus_mat_key) and (bus_result['date'][j] == bus_sheet['date'][i]) :
                 check = 1
-                bus_count.loc[j,'sum_getoff'] += bus['getoff'][i]
-                bus_count.loc[j,'sum_geton'] += bus['geton'][i]
+                bus_result.loc[j,'sum_getoff'] += bus_sheet['getoff'][i]
+                bus_result.loc[j,'sum_geton'] += bus_sheet['geton'][i]
                 break
-        if check == 0 :
-            temp = [bus['date'][i],bus_mat, bus['getoff'][i], bus['geton'][i]]
-            bus_count.loc[len(bus_count)] = temp
+        if !check : 
+            temp = [bus_sheet['date'][i],bus_mat_key, bus_sheet['geton'][i], bus_sheet['getoff'][i]] # initialize
+            bus_result.loc[len(bus_result)] = temp
     print("The end of "+str(s[index])) # 진행사항 확인
-        
-with pd.ExcelWriter("bus_count.xlsx") as writer:
-    bus_count.to_excel(writer)
+
+
+# In[ ]:
+
+with pd.ExcelWriter("bus_sum.xlsx") as writer:
+    bus_result.to_excel(writer)
     writer.save()
-    
- ########이렇게 하면 sheet1것만 계산이 된다 왜그러지??? 수정해야할듯
+
+
+# In[ ]:
+
 --------------------------------------보류코드----------------------------
 def mean(x) :
     return sum(x) / len(x)
