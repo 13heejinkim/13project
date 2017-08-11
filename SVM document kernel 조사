@@ -81,3 +81,12 @@ class sklearn.svm.NuSVR(nu=0.5, C=1.0, kernel='rbf', degree=3, gamma='auto', coe
 shrinking=True, tol=0.001, cache_size=200, verbose=False, max_iter=-1)
 
 각 세부 사항들을 완전히 이해하기에는 너무 어려운것 같다. 일단 사용하는 함수 틀을 알아봤다.
+
+------------------------------------------------------------------------------------------------
+[Kernel]
+
+'linear'은 그냥 직선으로 두개의 label로 분류
+'poly'는 2차,3차...n차 곡선으로 두개의 label로 분류
+'rbf'는 덩어리? 선으로 나누는게 아니라 일정 범위안에 모여있는것들을 끼리 묶는다?
+	-> (Gaussian) radial basis function
+'sigmoid'는 방사형?모양으로 나누는?
