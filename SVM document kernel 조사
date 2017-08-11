@@ -1,0 +1,83 @@
+[support vecotr classification]
+
+sklearn.svm.SVC
+
+class sklearn.svm.SVC(C=1.0, kernel='rbf', degree=3, gamma='auto', coef0=0.0, 
+
+shrinking=True, probability=False, tol=0.001, cache_size=200, class_weight=None, 
+
+verbose=False, max_iter=-1, decision_function_shape=None, random_state=None)
+
+kernel은 'linear', 'poly', 'rbf', 'sigmoid', 'precomputed'가 있다.
+degree : polynomial kernel의 degree. 따라서 다른 kernel에서는 무시가능
+gamma : 'rbf', 'poly', 'sigmoid'의 kernel 계수. 'auto'면 1/n개의 features가 사용됨
+codf0 : 'poly', 'sigmoid'에서만 사용
+tol : 허용 오차(이 오차를 넘으면 정지)
+class_weight : 가중치를 주지않으면 가중치 1로 계산됨. "balanced"사용하면 빈도에 반비례하는 
+
+가중치를 자동으로 조정
+decision_function_shape : 'ovo', 'ovr' , None
+	-> 'ovo' : one-vs-one --> (n_samples, n_classes*(n_classes-1)/2)
+	-> 'ovr' : one-vs-rest --> (n_samples, n_classes)
+
+<사용법>
+from sklearn.svm import SVC
+clf = SVC() #선언
+clf.fit(X,y)#X에 대한 label이 y?
+SVC(~) #옵션 설정
+print(clf.predict([[a,b]])) #어떠한 X가 주어졌을때 그 label을 예측해서 프린트
+
+
+sklearn.svm.LinearSVC
+
+class sklearn.svm.LinearSVC(penalty='l2', loss='squared_hinge', dual=True, tol=0.0001, 
+
+C=1.0, multi_class='ovr', fit_intercept=True, intercept_scaling=1, class_weight=None, 
+
+verbose=0, random_state=None, max_iter=1000)
+
+SVC에서 kernel='linear'와 비슷하지만 libsvm이 아닌 liblinear로 구현되어서 많은 샘플일때, 
+
+좀더 잘된다?
+
+loss : 'hinge' or 'squared_hinge'
+	-> 'hinge'는 그냥 오차? 단순 빼기?
+	-> 'squared_hinge'는 오차의 제곱?(sqeare of the hinge loss)
+
+
+sklearn.svm.NuSVC
+
+class sklearn.svm.NuSVC(nu=0.5, kernel='rbf', degree=3, gamma='auto', coef0=0.0, 
+
+shrinking=True, probability=False, tol=0.001, cache_size=200, class_weight=None, 
+
+verbose=False, max_iter=-1, decision_function_shape=None, random_state=None)
+
+SVC와 유사, 하지만 support 벡터의 개수를 컨트롤 가능
+
+-----------------------------------------------------------------
+[support vector regression]
+
+sklearn.svm.SVR
+
+class sklearn.svm.SVR(kernel='rbf', degree=3, gamma='auto', coef0=0.0, tol=0.001, C=1.0, 
+
+epsilon=0.1, shrinking=True, cache_size=200, verbose=False, max_iter=-1)
+
+
+sklearn.svm.LinearSVR
+
+class sklearn.svm.LinearSVR(epsilon=0.0, tol=0.0001, C=1.0, loss='epsilon_insensitive', 
+
+fit_intercept=True, intercept_scaling=1.0, dual=True, verbose=0, random_state=None, 
+
+max_iter=1000)
+
+
+sklearn.svm.NuSVR
+
+class sklearn.svm.NuSVR(nu=0.5, C=1.0, kernel='rbf', degree=3, gamma='auto', coef0=0.0, 
+
+shrinking=True, tol=0.001, cache_size=200, verbose=False, max_iter=-1)
+
+각 세부 사항들을 완전히 이해하기에는 너무 어려운것 같다. 일단 사용하는 함수 틀을 알아봤다.
