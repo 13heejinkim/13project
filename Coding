@@ -198,6 +198,70 @@ with pd.ExcelWriter("bus_sum.xlsx") as writer:
 
 # In[ ]:
 
+-------------------------------------이전달 이용량 포함하는 data----------------------------------------
+import pandas as pd
+from pandas import Series , DataFrame
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy import polyval
+from pylab import plot, title, show, legend
+
+all_data = pd.read_excel('all_data ver1.xlsx') ## 전체데이터 읽기
+
+for i in range(25) :
+    index = i*29
+    for j in range(29) :
+        if j == 0 :
+            temp = all_data['이용량'].loc[index+j]
+            all_data['B1'].loc[index+j] = temp
+            all_data['B2'].loc[index+j] = temp
+            all_data['B3'].loc[index+j] = temp
+            all_data['B4'].loc[index+j] = temp
+            all_data['B5'].loc[index+j] = temp
+        elif j == 1 :
+            all_data['B1'].loc[index+j] = all_data['이용량'].loc[index+j-1]
+            x = np.array([all_data['이용량'].loc[index+j], all_data['이용량'].loc[index+j-1]])
+            temp = int(round(np.mean(x)))
+            all_data['B2'].loc[index+j] = temp
+            all_data['B3'].loc[index+j] = temp
+            all_data['B4'].loc[index+j] = temp
+            all_data['B5'].loc[index+j] = temp
+        elif j == 2 :
+            all_data['B1'].loc[index+j] = all_data['이용량'].loc[index+j-1]
+            all_data['B2'].loc[index+j] = all_data['이용량'].loc[index+j-2]
+            x = np.array([all_data['이용량'].loc[index+j], all_data['이용량'].loc[index+j-1], all_data['이용량'].loc[index+j-2]])
+            temp = int(round(np.mean(x)))
+            all_data['B3'].loc[index+j] = temp
+            all_data['B4'].loc[index+j] = temp
+            all_data['B5'].loc[index+j] = temp
+        elif j == 3 :
+            all_data['B1'].loc[index+j] = all_data['이용량'].loc[index+j-1]
+            all_data['B2'].loc[index+j] = all_data['이용량'].loc[index+j-2]
+            all_data['B3'].loc[index+j] = all_data['이용량'].loc[index+j-3]
+            x = np.array([all_data['이용량'].loc[index+j], all_data['이용량'].loc[index+j-1], all_data['이용량'].loc[index+j-2], 
+                       all_data['이용량'].loc[index+j-3]])
+            temp = int(round(np.mean(x)))
+            all_data['B4'].loc[index+j] = temp
+            all_data['B5'].loc[index+j] = temp
+        elif j == 4 :
+            all_data['B1'].loc[index+j] = all_data['이용량'].loc[index+j-1]
+            all_data['B2'].loc[index+j] = all_data['이용량'].loc[index+j-2]
+            all_data['B3'].loc[index+j] = all_data['이용량'].loc[index+j-3]
+            all_data['B4'].loc[index+j] = all_data['이용량'].loc[index+j-4]
+            x = np.array([all_data['이용량'].loc[index+j], all_data['이용량'].loc[index+j-1], all_data['이용량'].loc[index+j-2], 
+                       all_data['이용량'].loc[index+j-3], all_data['이용량'].loc[index+j-4]])
+            temp = int(round(np.mean(x)))
+            all_data['B5'].loc[index+j] = temp
+        else :
+            all_data['B1'].loc[index+j] = all_data['이용량'].loc[index+j-1]
+            all_data['B2'].loc[index+j] = all_data['이용량'].loc[index+j-2]
+            all_data['B3'].loc[index+j] = all_data['이용량'].loc[index+j-3]
+            all_data['B4'].loc[index+j] = all_data['이용량'].loc[index+j-4]
+            all_data['B5'].loc[index+j] = all_data['이용량'].loc[index+j-5]
+            
+with pd.ExcelWriter("all_data fin.xlsx") as writer:
+    all_data.to_excel(writer)
+    writer.save()
 --------------------------------------보류코드----------------------------
 def mean(x) :
     return sum(x) / len(x)
