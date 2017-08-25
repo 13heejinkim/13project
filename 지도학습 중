@@ -1,0 +1,120 @@
+import pandas as pd
+import matplotlib
+import matplotlib.pyplot as plt
+from matplotlib import style
+from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+from scipy import stats
+from sklearn import svm
+#from sklearn import tree
+import numpy as np
+import pylab as pl
+
+air_Data=pd.read_excel('all_data fin.xlsx')
+#air_Data.head(10)
+
+# INPUT - OUTPUT
+X = air_Data[['기온','강수량','상대습도','미세먼지']].values
+#X = air_Data[['기온','강수량','미세먼지']].values
+#X = air_Data[['기온','상대습도','미세먼지']].values
+#일단 기본적인 강수량, 상대습도 둘다 포함된 상태로 진행하였다
+Y = air_Data['이용량'].
+
+# SET TRAIN & TEST
+X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size =0.3, random_state =0)
+
+# TRAIN - 여러가지 방법으로 지도학습을 시켜보았다
+
+#from sklearn.ensemble import AdaBoostRegressor
+#from sklearn.ensemble import BaggingRegressor
+#from sklearn.ensemble import ExtraTreesRegressor
+#from sklearn.ensemble import GradientBoostingRegressor
+#from sklearn.ensemble import RandomForestRegressor
+#from sklearn.gaussian_process import GaussianProcessRegressor
+#from sklearn.kernel_ridge import KernelRidge
+#from sklearn.linear_model import ARDRegression
+#from sklearn.linear_model import BayesianRidge
+#from sklearn.linear_model import HuberRegressor
+#from sklearn.linear_model import LarsCV
+#from sklearn.linear_model import PassiveAggressiveRegressor
+#from sklearn.linear_model import RANSACRegressor
+#from sklearn.linear_model import RidgeCV
+from sklearn.linear_model import TheilSenRegressor
+
+#slr = LogisticRegression()
+#slr = AdaBoostRegressor()
+#slr = BaggingRegressor()
+#slr = RandomForestRegressor()
+#slr = GaussianProcessRegressor()
+#slr = KernelRidge()
+#slr = ARDRegression()
+#slr = BayesianRidge()
+#slr = HuberRegressor()
+#slr = LarsCV()
+#slr = PassiveAggressiveRegressor()
+#slr = RANSACRegressor()
+#slr = RidgeCV()
+slr = TheilSenRegressor()
+
+slr.fit(X,Y)
+
+# Test
+Y_pred = slr.predict(X_test)
+
+#get step information
+test_rate=[]
+sub=[]
+for i in range(len(Y_test)):
+    test= int(Y_test[i])
+    pred=int(Y_pred[i])
+    if test > pred:
+        sub.append(test-pred)
+        rate= (test-pred)/test*100
+    else:
+        sub.append(pred-test)
+        rate= (pred-test)/pred*100
+    test_rate.append(rate)
+    
+pd_result=pd.DataFrame({'1_test':Y_test, '2_pred':Y_pred, '3_sub':sub, '4_rate':test_rate})
+#pd_result.head(10)
+
+with pd.ExcelWriter("RESULT.xlsx") as writer:
+    pd_result.to_excel(writer)
+    writer.save()
+    
+print("Test num : %d" %(len(Y_pred)))
+cnt=0
+for i in range(len(Y_pred)):
+    if Y_test[i] != Y_pred[i]:
+        cnt+=1
+print("Test error num : %d" %cnt)
+#print("Accuracy  : %.2f" %accuracy_score(Y_test, Y_pred))
+
+#평균
+np.mean(test_rate)
+
+#조화평균 - 0이 포함되면 조화평균을 사용못하므로 임의로 1로 바꿨다.
+temp = []
+
+for i in range(len(test_rate)) :
+    if test_rate[i] == 0 :
+        temp.append(1)
+    else :
+        temp.append(test_rate[i])
+        
+stats.hmean(temp)
+
+---------------------------------------------------------------------------------------------------
+같은 train과 test set일 때 결과
+단순 |예측값-실제값/실제값|으로 오차를 구하고, 각 오차의 평균으로 보았을 때
+
+RandomForestRegressor는 21.05715
+ExtraTreesRegressor는 16.44994
+GaussianProcessRegressor는 16.44995
+BaggingRegressor 는 20.41217
+의 오차평균값이 나왔다.
+
+나머지 방법들은 오차 평균이 25이상이 되어서 후보에서 제외하였다.
+이제 이 4가지 방법으로 좀더 오차율을 낮추는 방법을 생각해봐야한다.
